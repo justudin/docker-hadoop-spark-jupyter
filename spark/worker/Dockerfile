@@ -1,7 +1,7 @@
 ARG spark_version="3.0.0"
 ARG SPARK_MASTER_HOST="spark-master"
 ARG SPARK_MASTER_PORT="7077"
-FROM spark-base
+FROM justudin/spark-base:3.0.0
 
 ARG build_date
 

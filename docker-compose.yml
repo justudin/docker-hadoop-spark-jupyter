@@ -3,14 +3,13 @@ version: "3.9"
 services:
   ####### HADOOP
   hadoop-namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
     container_name: hadoop-namenode
     restart: always
-    build: ./hadoop/namenode
     ports:
       - 9870:9870
       - 9000:9000
-    networks:
-     - bds-network
+
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
     environment:
@@ -19,46 +18,42 @@ services:
       - ./hadoop/hadoop.env
 
   hadoop-datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
     container_name: hadoop-datanode
     restart: always
-    build: ./hadoop/datanode
     volumes:
       - hadoop_datanode:/hadoop/dfs/data
-    networks:
-     - bds-network
+
     environment:
       SERVICE_PRECONDITION: "hadoop-namenode:9870"
     env_file:
       - ./hadoop/hadoop.env
   
   hadoop-resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
     container_name: hadoop-resourcemanager
     restart: always
-    build: ./hadoop/resourcemanager
-    networks:
-     - bds-network
+
     environment:
       SERVICE_PRECONDITION: "hadoop-namenode:9000 hadoop-namenode:9870 hadoop-datanode:9864"
     env_file:
       - ./hadoop/hadoop.env
 
   hadoop-nodemanager-1:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
     container_name: hadoop-nodemanager-1
     restart: always
-    build: ./hadoop/nodemanager
-    networks:
-     - bds-network
+
     environment:
       SERVICE_PRECONDITION: "hadoop-namenode:9000 hadoop-namenode:9870 hadoop-datanode:9864 hadoop-resourcemanager:8088"
     env_file:
       - ./hadoop/hadoop.env
 
   hadoop-historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
     container_name: hadoop-historyserver
     restart: always
-    build: ./hadoop/historyserver
-    networks:
-     - bds-network
+
     environment:
       SERVICE_PRECONDITION: "hadoop-namenode:9000 hadoop-namenode:9870 hadoop-datanode:9864 hadoop-resourcemanager:8088"
     volumes:
@@ -73,8 +68,7 @@ services:
     ports:
       - 8080:8080
       - 7077:7077
-    networks:
-     - bds-network
+
     volumes:
       - shared-workspace:/opt/workspace
 
@@ -83,11 +77,10 @@ services:
     container_name: spark-worker-1
     environment:
       - SPARK_WORKER_CORES=1
-      - SPARK_WORKER_MEMORY=512m
+      - SPARK_WORKER_MEMORY=1G
     ports:
       - 8081:8081
-    networks:
-     - bds-network
+
     volumes:
       - shared-workspace:/opt/workspace
     depends_on:
@@ -98,11 +91,24 @@ services:
     container_name: spark-worker-2
     environment:
       - SPARK_WORKER_CORES=1
-      - SPARK_WORKER_MEMORY=512m
-    networks:
-     - bds-network
+      - SPARK_WORKER_MEMORY=1G
+
     ports:
       - 8082:8081
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - spark-master
+
+  spark-worker-3:
+    build: ./spark/worker
+    container_name: spark-worker-3
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+
+    ports:
+      - 8083:8081
     volumes:
       - shared-workspace:/opt/workspace
     depends_on:
@@ -115,8 +121,7 @@ services:
     ports:
       - 8888:8888
       - 4040:4040
-    networks:
-     - bds-network
+
     volumes:
       - shared-workspace:/opt/workspace
 
@@ -128,6 +133,7 @@ volumes:
     name: "hadoop-distributed-file-system"
     driver: local
 
-networks:
-  bds-network:
-    external: true
+#networks:
+#  bds-network:
+#    name: bds-network
+#    external: true

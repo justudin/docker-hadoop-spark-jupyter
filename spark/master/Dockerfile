@@ -1,5 +1,5 @@
 ARG spark_version="3.0.0"
-FROM spark-base
+FROM justudin/spark-base:3.0.0
 
 ARG build_date
 EXPOSE 8080 7077
