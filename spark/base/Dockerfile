@@ -1,6 +1,8 @@
 ARG debian_buster_image_tag=8-jre
 FROM ibmjava:${debian_buster_image_tag}
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 ARG scala_version="2.12.10"
 ARG build_date
 ARG shared_workspace=/opt/workspace
