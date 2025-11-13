@@ -1,5 +1,5 @@
-ARG debian_buster_image_tag=8-jre-slim
-FROM openjdk:${debian_buster_image_tag}
+ARG debian_buster_image_tag=8-jre
+FROM ibmjava:${debian_buster_image_tag}
 
 ARG scala_version="2.12.10"
 ARG build_date
@@ -30,11 +30,11 @@ ARG scala_kernel_version="0.10.9"
 #JupyterLab + Python kernel for PySpark
 COPY workspace/ /workspace/
 
-RUN apt-get update -y
+#RUN apt-get update -y
 RUN apt-get install -y python3-pip python3-dev
 RUN pip3 install --upgrade pip
 RUN pip3 install wget==3.2 pyspark==${spark_version} jupyterlab==${jupyterlab_version}
-RUN pip3 install pandas
+RUN pip3 install pandas matplotlib seaborn scikit-learn scipy
 
 #Scala kernel for Spark
 RUN apt-get install -y ca-certificates-java --no-install-recommends
