@@ -15,7 +15,7 @@ services:
     environment:
       - CLUSTER_NAME=test
     env_file:
-      - ./hadoop/hadoop.env
+      - ../hadoop/hadoop.env
 
   hadoop-datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
@@ -27,7 +27,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "hadoop-namenode:9870"
     env_file:
-      - ./hadoop/hadoop.env
+      - ../hadoop/hadoop.env
   
   hadoop-resourcemanager:
     image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
@@ -37,7 +37,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "hadoop-namenode:9000 hadoop-namenode:9870 hadoop-datanode:9864"
     env_file:
-      - ./hadoop/hadoop.env
+      - ../hadoop/hadoop.env
 
   hadoop-nodemanager-1:
     image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
@@ -47,7 +47,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "hadoop-namenode:9000 hadoop-namenode:9870 hadoop-datanode:9864 hadoop-resourcemanager:8088"
     env_file:
-      - ./hadoop/hadoop.env
+      - ../hadoop/hadoop.env
 
   hadoop-historyserver:
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
@@ -59,7 +59,7 @@ services:
     volumes:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
-      - ./hadoop/hadoop.env
+      - ../hadoop/hadoop.env
 
   ####### SPARK
   spark-master:
